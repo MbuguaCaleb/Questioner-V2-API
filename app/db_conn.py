@@ -7,27 +7,43 @@ db_url=os.getenv('DATABASE_URL')
 
 print(db_url)
 
-conn =psycopg2.connect(url)
 
-cur = conn.cursor()
+def connection(url):
+
+    """connection to the database"""
 
 
+    conn=psycopg2.connect(url)
+   
+    return conn
+
+
+def init_db():
+
+    """Database connection initialized to be used in the models"""
     
-cur.execute(
-      '''CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY NOT NULL,
-        firstname VARCHAR(250) NOT NULL,
-        lastname VARCHAR(250) NOT NULL,
-        othername VARCHAR(250) NULL,
-        username VARCHAR(250) NOT NULL,
-        phonenumber VARCHAR(250) NULL,
-        email VARCHAR(250) NOT NULL,
-        password VARCHAR(250) NOT NULL,
-        registered TIMESTAMP WITHOUT TIME ZONE \
-        DEFAULT (NOW() AT TIME ZONE 'utc'),
-        admin BOOLEAN NOT NULL DEFAULT FALSE
-    );
-    CREATE TABLE IF NOT EXISTS meetups (
+    con = connection(url)
+    
+    return con
+
+def tables():
+    """Creates table queries"""    
+
+    user_table = """
+        CREATE TABLE IF NOT EXISTS users(
+            id SERIAL PRIMARY KEY,
+            firstname VARCHAR(20) NOT NULL,
+            lastname VARCHAR(20) NOT NULL,
+            othername VARCHAR(20) NOT NULL,
+            email VARCHAR UNIQUE NOT NULL,
+            phone_number VARCHAR(10) NOT NULL,
+            username VARCHAR(20) UNIQUE NOT NULL,
+            password VARCHAR(20) NOT NULL,
+            is_admin BOOLEAN NOT NULL DEFAULT FALSE
+        );
+    """
+    meetups = """
+        CREATE TABLE IF NOT EXISTS meetups(
         id SERIAL PRIMARY KEY NOT NULL,
         topic VARCHAR(250) NOT NULL,
         description VARCHAR(250) NOT NULL,
@@ -38,8 +54,11 @@ cur.execute(
         DEFAULT (NOW() AT TIME ZONE 'utc'),
         modified_at TIMESTAMP WITHOUT TIME ZONE \
         DEFAULT (NOW() AT TIME ZONE 'utc')
-    );
-     CREATE TABLE IF NOT EXISTS questions (
+    
+        );
+    """
+    questions = """
+         CREATE TABLE IF NOT EXISTS questions (
         id SERIAL PRIMARY KEY NOT NULL,
         title VARCHAR(250) NULL,
         body VARCHAR(250) NOT NULL,
@@ -52,9 +71,12 @@ cur.execute(
         DEFAULT (NOW() AT TIME ZONE 'utc'),
         FOREIGN KEY (meetup_id) REFERENCES meetups(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-    CREATE TABLE IF NOT EXISTS comments (
-        id SERIAL PRIMARY KEY NOT NULL,
+       
+        );
+    """
+    comments = """
+    CREATE TABLE IF NOT EXISTS comments(
+    id SERIAL PRIMARY KEY NOT NULL,
         body VARCHAR(250) NULL,
         question_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
@@ -64,24 +86,50 @@ cur.execute(
         DEFAULT (NOW() AT TIME ZONE 'utc'),
         FOREIGN KEY (question_id) REFERENCES questions(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-     CREATE TABLE IF NOT EXISTS rsvps (
-        meetup_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        response VARCHAR(10),
-        created_at TIMESTAMP WITHOUT TIME ZONE \
-        DEFAULT (NOW() AT TIME ZONE 'utc'),
-        modified_at TIMESTAMP WITHOUT TIME ZONE \
-        DEFAULT (NOW() AT TIME ZONE 'utc'),
-        PRIMARY KEY (meetup_id, user_id)
-    );
-    CREATE TABLE IF NOT EXISTS votes (
-        question_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        vote VARCHAR(10),
-        PRIMARY KEY (question_id, user_id)
-    );
-    ''')
+       
+        );
+    """
+   
+    votes = """
+    CREATE TABLE IF NOT EXISTS votes(
+    question_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    vote VARCHAR(10),
+    PRIMARY KEY (question_id, user_id)   
+        );
+    """
+    
+    
 
-conn.commit()
-conn.close()
+    return[user_table,meetups,questions,comments,votes]
+
+
+
+def create_tables():
+
+    
+
+    conn = connection(db_url)
+
+    cur = conn.cursor()
+
+    user_tables = tables()
+
+    for i in user_tables:
+        
+        cur.execute(i)
+    
+        conn.commit()
+    return conn
+
+   
+
+def main():
+
+    """calls create tables directly"""
+
+    create_tables()
+
+main()
+
+
