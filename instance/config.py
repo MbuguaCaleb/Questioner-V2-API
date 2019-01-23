@@ -26,13 +26,6 @@ class TestingConfig(Config):
     DATABASE_NAME = os.getenv('TEST_DATABASE_NAME')
 
 
-class StagingConfig(Config):
-    """ Config class for Staging environment """
-
-    DEBUG = True
-    DATABASE_NAME = os.getenv('TEST_DATABASE_NAME')
-
-
 class ProductionConfig(Config):
     """ Config class for Production environment """
 
@@ -44,7 +37,6 @@ class ProductionConfig(Config):
 app_config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
-    'staging': StagingConfig,
     'production': ProductionConfig
 }
 
