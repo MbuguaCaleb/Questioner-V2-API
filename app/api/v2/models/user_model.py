@@ -7,6 +7,8 @@ cur = con.cursor(cursor_factory=RealDictCursor)
 
 
 class User(object):
+    table = 'users'
+
     """ Model class for the user object """
 
     def save(self, data=None):
@@ -19,3 +21,15 @@ class User(object):
 
         
   
+    def exists(self, key, value):
+        """ Function to check if user exists """
+
+        query = "SELECT * FROM {} WHERE {} = '{}'".format(
+            self.table, key, value)
+        cur.execute(query)
+
+        result = cur.fetchall()
+        return len(result) > 0
+
+    
+    
