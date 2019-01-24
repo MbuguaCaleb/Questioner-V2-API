@@ -8,10 +8,26 @@ db_url=os.getenv('DATABASE_URL')
 print(db_url)
 
 
+def initialize_db():
+    """Creates Database Connection"""
+    config = os.getenv("APP_SETTINGS")
+    try:
+        if config == "development":
+            url = os.getenv("DATABASE_URL")
+            connection = psycopg2.connect(url)
+            connection.autocommit = True
+        elif config == "testing":
+            url = os.getenv("DB_TESTING_URL")
+            connection = psycopg2.connect(url)
+            connection.autocommit = True
+        return connection
+    except Exception as e:
+        return "{}, couldn't connect to database.".format(e)
+
+
 def connection(url):
 
     """connection to the database"""
-
 
     conn=psycopg2.connect(url)
    
@@ -26,6 +42,7 @@ def init_db():
     
     return con
 
+
 def tables():
     """Creates table queries"""    
 
@@ -34,7 +51,6 @@ def tables():
             id SERIAL PRIMARY KEY,
             firstname VARCHAR(20) NOT NULL,
             lastname VARCHAR(20) NOT NULL,
-            othername VARCHAR(20) NOT NULL,
             email VARCHAR UNIQUE NOT NULL,
             phone_number VARCHAR(10) NOT NULL,
             username VARCHAR(20) UNIQUE NOT NULL,
