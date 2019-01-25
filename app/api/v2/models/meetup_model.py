@@ -22,3 +22,13 @@ class Meetup(object):
         return data
 
  
+    
+    def exists(self, key, value):
+        """ Function to check if user exists """
+
+        query = "SELECT * FROM {} WHERE {} = '{}'".format(
+            self.table, key, value)
+        cur.execute(query)
+
+        result = cur.fetchall()
+        return len(result) > 0
