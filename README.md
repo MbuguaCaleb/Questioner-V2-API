@@ -1,3 +1,8 @@
+# Questionner-api
+
+[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
+
+[![Build Status](https://travis-ci.org/MbuguaCaleb/Questioner-V2-API.svg?branch=master)](https://travis-ci.org/MbuguaCaleb/Questioner-endpoints) 
 
 Questioner is a platform for organising meetups where It helps the meetup organizer prioritize questions to be answered. Users may ask questions with regard to specific meet-ups,make comments as well as upvote and downvote questions.
 
