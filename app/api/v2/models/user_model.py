@@ -7,6 +7,8 @@ cur = con.cursor(cursor_factory=RealDictCursor)
 
 
 class User(object):
+    table = 'users'
+
     """ Model class for the user object """
 
     table ='users'
@@ -20,7 +22,7 @@ class User(object):
         return data
 
         
-     
+
     def exists(self, key, value):
         """ Function to check if user exists """
 
@@ -30,6 +32,7 @@ class User(object):
 
         result = cur.fetchall()
         return len(result) > 0
+
     
 
     def find(self, key, value):
@@ -49,3 +52,4 @@ class User(object):
         """ Function to check if passwords match """
 
         return check_password_hash(hashed_password, password)
+
