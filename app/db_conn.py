@@ -1,5 +1,6 @@
 import psycopg2
 import os  
+from werkzeug.security import generate_password_hash
 
 url="dbname='questioner_api' host='localhost'  port='5432' user='postgres' password='andela'"
 
@@ -25,6 +26,8 @@ def initialize_db():
         return "{}, couldn't connect to database.".format(e)
 
 
+
+
 def connection(url):
 
     """connection to the database"""
@@ -32,6 +35,8 @@ def connection(url):
     conn=psycopg2.connect(url)
    
     return conn
+
+
 
 
 def init_db():
@@ -55,17 +60,19 @@ def tables():
             phone_number VARCHAR(10) NOT NULL,
             username VARCHAR(20) UNIQUE NOT NULL,
             password VARCHAR(20) NOT NULL,
-            is_admin BOOLEAN NOT NULL DEFAULT FALSE
+            is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+            created_at TIMESTAMP WITHOUT TIME ZONE \
+            DEFAULT (NOW() AT TIME ZONE 'utc'),
+            modified_at TIMESTAMP WITHOUT TIME ZONE \
+            DEFAULT (NOW() AT TIME ZONE 'utc')
         );
     """
     meetups = """
         CREATE TABLE IF NOT EXISTS meetups(
         id SERIAL PRIMARY KEY NOT NULL,
         topic VARCHAR(250) NOT NULL,
-        description VARCHAR(250) NOT NULL,
         location VARCHAR(250) NOT NULL,
-        happening_on VARCHAR(250) NOT NULL,
-        tags VARCHAR [],
+        description VARCHAR(250) NOT NULL,
         created_at TIMESTAMP WITHOUT TIME ZONE \
         DEFAULT (NOW() AT TIME ZONE 'utc'),
         modified_at TIMESTAMP WITHOUT TIME ZONE \
@@ -123,7 +130,7 @@ def tables():
 
 def create_tables():
 
-    
+    """Function to create the tables"""
 
     conn = connection(db_url)
 
@@ -138,7 +145,8 @@ def create_tables():
         conn.commit()
     return conn
 
-   
+
+
 
 def main():
 

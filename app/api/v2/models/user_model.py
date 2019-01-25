@@ -22,7 +22,6 @@ class User(object):
         return data
 
         
-
     def exists(self, key, value):
         """ Function to check if user exists """
 

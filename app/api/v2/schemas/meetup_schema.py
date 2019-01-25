@@ -1,24 +1,14 @@
-from marshmallow import Schema, fields
-from ..utils.validator import required, date, tags
+from marshmallow import Schema, fields, post_dump
+from ..utils.validator import required
 
 
 
 class MeetupSchema(Schema):
-    """ Schema for Meetups """
+    """ Class to validate schema for Meetup object """
 
     id = fields.Int(dump_only=True)
-
     topic = fields.Str(required=True, validate=(required))
-
-    description = fields.Str(required=True, validate=(required))
-
     location = fields.Str(required=True, validate=(required))
-
-    happening_on = fields.Str(required=True, validate=(required, date))
-
-    created_at = fields.DateTime(dump_only=True)
-
-    modified_at = fields.DateTime(dump_only=True)
-
- 
+    description = fields.Str(required=True, validate=(required))
+   
 
